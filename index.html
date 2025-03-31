@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Genetic Algorithm Route Optimization</title>
+    <script src="dataset.js"></script>
+    <script src="script.js"></script>
+</head>
+<body>
+    <h2>Genetic Algorithm for Route Optimization</h2>
+    <button onclick="runGA()">Run GA</button>
+    <p>Check the browser console (F12) for output.</p>
+
+    <script>
+        function runGA() {
+            let population = [];
+            for (let i = 0; i < 100; i++) {
+                let shuffled = cities.slice().sort(() => Math.random() - 0.5);
+                population.push(shuffled);
+            }
+
+            let best = population[0];
+            let bestDist = totalDistance(best);
+
+            for (let gen = 0; gen < 200; gen++) {
+                population.sort((a, b) => totalDistance(a) - totalDistance(b));
+                best = population[0];
+                bestDist = totalDistance(best);
+
+                let newPop = [];
+                for (let i = 0; i < population.length; i++) {
+                    let p1 = population[Math.floor(Math.random() * 5)];
+                    let p2 = population[Math.floor(Math.random() * 5)];
+                    let child = crossover(p1, p2);
+                    if (Math.random() < 0.05) mutate(child);
+                    newPop.push(child);
+                }
+                population = newPop;
+            }
+
+            console.log("Best Route:", best.map(c => c.name).join(" -> "));
+            console.log("Total Distance:", bestDist.toFixed(2));
+        }
+    </script>
+</body>
+</html>
